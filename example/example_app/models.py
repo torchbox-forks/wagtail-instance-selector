@@ -1,8 +1,12 @@
 from django.db import models
 
 from instance_selector.edit_handlers import InstanceSelectorPanel
+from instance_selector.blocks import InstanceSelectorBlock
 
 from wagtail.admin.panels import FieldPanel
+from wagtail.models import Page
+from wagtail.fields import StreamField
+from wagtail.blocks import CharBlock, RichTextBlock
 
 
 class Shop(models.Model):
@@ -47,3 +51,15 @@ class Image(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class ShopPage(Page):
+    content = StreamField([
+        ("heading", CharBlock()),
+        ("paragraph", RichTextBlock()),
+        ("products", InstanceSelectorBlock(target_model="example_app.Product")),
+    ])
+
+    content_panels = Page.content_panels + [
+        FieldPanel("content"),
+    ]

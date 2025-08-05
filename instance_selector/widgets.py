@@ -144,9 +144,14 @@ class InstanceSelectorWidget(widgets.Input):
     def build_attrs(self, *args, **kwargs):
         attrs = super().build_attrs(*args, **kwargs)
         attrs["data-controller"] = "instance-selector"
-        attrs["data-instance-selector-config-value"] = json.dumps(
-            self.get_js_config(self.id_, self.name)
-        )
+        
+        # Only add the config if we have the required attributes
+        # This can happen during telepath serialization when id_ and name aren't set yet
+        if hasattr(self, 'id_') and hasattr(self, 'name'):
+            attrs["data-instance-selector-config-value"] = json.dumps(
+                self.get_js_config(self.id_, self.name)
+            )
+        
         return attrs
 
     @property
